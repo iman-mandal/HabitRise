@@ -11,8 +11,8 @@ const HabitSchema = new mongoose.Schema({
         date: { type: String },
         completed: { type: Boolean, default: false }
     }],
-    streak:{type:Number,default:0},
-    longestStreak:{type:Number,default:0},
+    streak: { type: Number, default: 0 },
+    longestStreak: { type: Number, default: 0 },
     active: { type: Boolean, default: true }
 }, { timestamps: true });
 

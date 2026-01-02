@@ -1,28 +1,21 @@
+const userModel = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-//generate the token
-const generateToken = (user) => {
-    return jwt.sign(
-        { id: user._id, name: user.name, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: '7d' }
-    )
-};
 
-const jwtAuthMiddlewere = (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1];
-
-    if (!token)
-        return res.status(401).json({ error: "No token provided" });
-
+module.exports.authUser = async (req, res, next) => {
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decoded.id;   // IMPORTANT
-        next();
+        const user = await userModel.findById(decoded._id);
+
+        req.user = user;
+        return next();
+
     } catch (err) {
-        res.status(401).json({ error: "Invalid token" });
+        console.log(err);
+        return res.status(401).json({ mesage: 'Unauthorized' });
     }
-};
-
-
-module.exports = { generateToken, jwtAuthMiddlewere };
+}

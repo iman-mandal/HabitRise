@@ -1,24 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const { jwtAuthMiddlewere, generateToken } = require('../middlewere/auth');
+
 const Habit = require('../models/habits');
 
 
 // Create habit 
-router.post('/createHabit', jwtAuthMiddlewere, async (req, res) => {
+router.post('/createHabit', async (req, res) => {
     try {
-        const data = { ...req.body, user: req.userId };
-        const habit = await Habit.create(data);
-        console.log('Habit saved sucessfully');
-        res.json(habit);
+        console.log("Req User ID:", req.userId);  
+
+        if (!req.userId) {
+            return res.status(400).json({ error: "User Not Found in Token" });
+        }
+
+        const habit = await Habit.create({
+            title: req.body.title,
+            user: req.userId
+        });
+
+        res.json({ message: "Habit created", habit });
+
     } catch (err) {
-        console.log(err);
-        res.status(500).json({ err: 'Internal Server Error' });
+        console.log("Habit Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
 //get all habits
-router.get('/', jwtAuthMiddlewere, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const habit = await Habit.find({ user: req.userId });
         console.log('Habit fetched sucessfully');
@@ -30,7 +39,7 @@ router.get('/', jwtAuthMiddlewere, async (req, res) => {
 });
 
 //update Habit
-router.put('/:id', jwtAuthMiddlewere, async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const habit = await Habit.findOneAndUpdate({ _id: req.params.id, user: req.userId }, req.body, { new: true });
         if (!habit) { return res.status(404).json({ message: 'Can not find habit' }) };
@@ -43,7 +52,7 @@ router.put('/:id', jwtAuthMiddlewere, async (req, res) => {
 });
 
 //Delete haboits 
-router.delete('/:id', jwtAuthMiddlewere, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const habit = await Habit.findById(req.params.id);
         if (!habit) { return res.status(404).json({ message: 'Order not found!' }) };
@@ -61,7 +70,7 @@ router.delete('/:id', jwtAuthMiddlewere, async (req, res) => {
 });
 
 //complitation date
-router.post('/:id/toggle', jwtAuthMiddlewere, async (req, res) => {
+router.post('/:id/toggle', async (req, res) => {
 try{
     const { date } = req.body;
     const day = date || new Date().toISOString().slice(0, 10);

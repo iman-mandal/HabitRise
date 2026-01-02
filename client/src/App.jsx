@@ -18,18 +18,6 @@ function RequireAuth({ children }) {
 
 export default function App() {
   return (
-    <>
-      <Navbar />
-      <main className="container">
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-          <Route path="*" element={<div className="card">Page not found</div>} />
-        </Routes>
-      </main>
-    </>
-  );
+    
+  )
 }
