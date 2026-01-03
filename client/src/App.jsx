@@ -1,23 +1,33 @@
-// src/App.jsx
-import React, { useContext } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/Auth/Login';
-import Register from './components/Auth/Signup';
-import Dashboard from './Pages/Dashboard';
-import Profile from './/Pages/Profile';
-import Navbar from './components/UI/Navbar';
-import { AuthContext } from './context/AuthContext';
+import React from 'react'
+import { Route, Routes } from 'react-router-dom';
+import Start from './Pages/Start';
+import Home from './Pages/Home'
+import Login from './Pages/Login'
+import SignUp from './Pages/SignUp'
+import Profile from './Pages/Profile'
+import AddHabit from './Pages/AddHabit'
+import HabitDetails from './Pages/HabitDetails'
+import Analytics from './Pages/Analytics'
+import CalendarView from './Pages/CalendarView'
+import HabitList from './Pages/HabitList'
 
-function RequireAuth({ children }) {
-  const { user } = useContext(AuthContext);
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
-}
-
-export default function App() {
+const App = () => {
   return (
-    
+    <div>
+      <Routes>
+        <Route path='/' element={ <Start />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/add-habit' element={<AddHabit />} />
+        <Route path='/habit-details' element={<HabitDetails />} />
+        <Route path='/habit-analytics' element={<Analytics />} />
+        <Route path='habit-calendar' element={<CalendarView />} />
+        <Route path='habit-list' element={<HabitList />} />
+      </Routes>
+    </div>
   )
 }
+
+export default App
